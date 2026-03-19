@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}在庫管理システム{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>📦 在庫管理システム</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('index') }}" class="nav-link">ホーム</a></li>
+                <li><a href="{{ url_for('list_products') }}" class="nav-link">在庫一覧</a></li>
+                <li><a href="{{ url_for('add_product_page') }}" class="nav-link nav-link-btn">➕ 商品追加</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 在庫管理システム | すべての権利を保有します</p>
+    </footer>
+
+    <script>
+        // 削除確認
+        function confirmDelete(productId, productName) {
+            if (confirm(`「${productName}」を削除しますか？`)) {
+                deleteProduct(productId);
+            }
+        }
+
+        // 在庫増加
+        function increaseStock(productId) {
+            const amount = prompt('増加させる数量を入力してください:', '1');
+            if (amount !== null) {
+                updateStock(productId, 'increase', parseInt(amount));
+            }
+        }
+
+        // 在庫減少
+        function decreaseStock(productId) {
+            const amount = prompt('減少させる数量を入力してください:', '1');
+            if (amount !== null) {
+                updateStock(productId, 'decrease', parseInt(amount));
+            }
+        }
+
+        // 在庫更新（API呼び出し）
+        function updateStock(productId, action, amount) {
+            const endpoint = `/api/product/${productId}/${action}`;
+            
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount: amount })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('エラー: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('通信エラーが発生しました');
+            });
+        }
+
+        // 商品削除（API呼び出し）
+        function deleteProduct(productId) {
+            fetch(`/api/product/${productId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('エラー: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('通信エラーが発生しました');
+            });
+        }
+    </script>
+</body>
+</html>
