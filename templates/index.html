@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}ホーム - 在庫管理システム{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="hero-content">
+        <h2>在庫管理システムへようこそ</h2>
+        <p>商品の在庫を簡単に管理できます</p>
+    </div>
+</div>
+
+<div class="dashboard">
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <h3>{{ products|length }}</h3>
+                <p>登録商品</p>
+            </div>
+        </div>
+
+        <div class="stat-card warning">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-content">
+                <h3>{{ low_stock_count }}</h3>
+                <p>在庫不足商品</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+                <h3>管理中</h3>
+                <p>システム稼働中</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h3>クイックアクション</h3>
+        <div class="action-buttons">
+            <a href="{{ url_for('add_product_page') }}" class="btn btn-primary">➕ 商品を追加</a>
+            <a href="{{ url_for('list_products') }}" class="btn btn-secondary">📋 在庫一覧を確認</a>
+        </div>
+    </div>
+
+    {% if low_stock_count > 0 %}
+    <div class="alert alert-warning">
+        <h3>⚠️ 注意</h3>
+        <p>{{ low_stock_count }}個の商品が在庫不足です。在庫補充をご確認ください。</p>
+        <a href="{{ url_for('list_products') }}" class="btn btn-small">確認する</a>
+    </div>
+    {% endif %}
+
+    <div class="info-section">
+        <h3>使い方</h3>
+        <ol>
+            <li><strong>商品追加</strong> - 新しい商品を登録します</li>
+            <li><strong>在庫管理</strong> - 各商品の在庫数を増減させます</li>
+            <li><strong>一覧表示</strong> - すべての商品と在庫状況を確認します</li>
+            <li><strong>商品削除</strong> - 不要な商品を削除します</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}
