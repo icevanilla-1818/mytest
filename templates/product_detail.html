@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - 在庫管理システム{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <a href="{{ url_for('list_products') }}" class="back-link">← 戻る</a>
+    <h2>{{ product.name }}</h2>
+</div>
+
+<div class="product-detail-container">
+    <div class="detail-card">
+        <h3>在庫情報</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">現在の在庫</span>
+                <span class="detail-value large">{{ product.quantity }}</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">最小在庫数</span>
+                <span class="detail-value">{{ product.min_quantity }}</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">ステータス</span>
+                <span class="detail-value">
+                    {% if product.quantity <= product.min_quantity %}
+                    <span class="badge badge-danger">🔴 在庫不足</span>
+                    {% elif product.quantity <= product.min_quantity * 1.5 %}
+                    <span class="badge badge-warning">🟡 要注意</span>
+                    {% else %}
+                    <span class="badge badge-success">🟢 正常</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="increaseStock({{ product.id }})">➕ 在庫を増やす</button>
+            <button class="btn btn-danger" onclick="decreaseStock({{ product.id }})">➖ 在庫を減らす</button>
+            <button class="btn btn-delete" onclick="confirmDelete({{ product.id }}, '{{ product.name }}')">🗑️ 削除</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
